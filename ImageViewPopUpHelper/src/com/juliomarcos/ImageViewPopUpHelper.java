@@ -22,6 +22,10 @@ public class ImageViewPopUpHelper {
 	private int finalImageHeight;
 	private boolean requireResizingOfBitmap;
 
+	private ImageView poppedImageView;
+	private Dialog dialog;
+
+	@SuppressWarnings("deprecation")
 	private void cacheResizedImage(ImageView imageView) {
 		imageViewDrawable = imageView.getDrawable();		
 		int imageRealWidth = imageViewDrawable.getIntrinsicWidth();
@@ -32,20 +36,25 @@ public class ImageViewPopUpHelper {
 		final int screenHeight = screenDimensions.y;
 				
 		// Algoritmo iterativo para achar um tamanho final para a imagem
-		while(imageRealWidth > screenWidth || imageRealHeight > screenHeight) {					
+		while(imageRealWidth >= screenWidth || imageRealHeight >= screenHeight) {					
 			imageRealWidth  *= 0.9;
 			imageRealHeight *= 0.9;
-		}
-		
-		finalImageWidth = imageRealWidth;
-		finalImageHeight = imageRealHeight;
-		
-		requireResizingOfBitmap = false;
-		if (finalImageHeight != imageRealHeight ||
-			finalImageHeight != imageRealHeight) {
 			requireResizingOfBitmap = true;
 		}
 		
+		finalImageWidth = imageRealWidth;
+		finalImageHeight = imageRealHeight;		
+		
+		if (requireResizingOfBitmap) {
+			Bitmap bitmap = drawableToBitmap(imageViewDrawable);
+			BitmapDrawable resizedBitmapDrawable = new BitmapDrawable(
+					context.getResources(), 
+					Bitmap.createScaledBitmap(bitmap, finalImageWidth, finalImageHeight, false));
+			poppedImageView.setBackgroundDrawable(resizedBitmapDrawable);
+		}
+		else {
+			poppedImageView.setBackgroundDrawable(imageViewDrawable);
+		}
 	}
 	
 	public static void enablePopUpOnClick(final Activity context, final ImageView imageView) {
@@ -55,9 +64,15 @@ public class ImageViewPopUpHelper {
 	private void internalEnablePopUpOnClick(final Activity context, final ImageView imageView) {		
 		
 		this.context = context;
+		poppedImageView = new ImageView(context);
 		
-		imageView.setOnClickListener(new View.OnClickListener() {			
-			@SuppressWarnings("deprecation")
+		dialog = new Dialog(context);
+		dialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
+		dialog.setContentView(poppedImageView);
+		dialog.getWindow().setBackgroundDrawable(null); // Without this line there is a very small border around the image (1px)				
+		dialog.setCanceledOnTouchOutside(true); // Gingerbread support
+		
+		imageView.setOnClickListener(new View.OnClickListener() {						
 			@Override
 			public void onClick(View v) {									
 				
@@ -67,25 +82,7 @@ public class ImageViewPopUpHelper {
 					cacheResizedImage(imageView);
 				}
 								
-				ImageView poppedImageView = new ImageView(context);
-				
-				if (requireResizingOfBitmap) {
-					Bitmap bitmap = drawableToBitmap(imageViewDrawable);
-					BitmapDrawable resizedBitmapDrawable = new BitmapDrawable(
-							context.getResources(), 
-							Bitmap.createScaledBitmap(bitmap, finalImageWidth, finalImageHeight, false));
-					poppedImageView.setBackgroundDrawable(resizedBitmapDrawable);
-				}
-				else {
-					poppedImageView.setBackgroundDrawable(imageViewDrawable);
-				}
-				
-				Dialog dialog = new Dialog(context);
-				dialog.requestWindowFeature((int) Window.FEATURE_NO_TITLE);
-				dialog.setContentView(poppedImageView);
-				dialog.getWindow().setBackgroundDrawable(null); // Without this line there is a very small border around the image (1px)
 				dialog.show();
-				dialog.setCanceledOnTouchOutside(true); // Gingerbread support
 			}
 		});
 	}
