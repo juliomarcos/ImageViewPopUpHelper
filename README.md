@@ -5,11 +5,11 @@ ImageViewPopUpHelper will cache your images on it's static method call. If the i
 
 Example of Use
 -----
-![bigger image](https://raw.github.com/juliomarcos/ImageViewPopUpHelper/master/images/popup-ex1.jpg)
+![bigger image](https://raw.github.com/juliomarcos/ImageViewPopUpHelper/master/images/ex.jpg)
 
 Download
 -----
-Download the [0.1 JAR] (https://raw.github.com/juliomarcos/ImageViewPopUpHelper/master/bin/imageviewpopuphelper-0.1.jar)
+Download the [0.1 JAR] (https://github.com/juliomarcos/ImageViewPopUpHelper/raw/master/ImageViewPopUpHelper/bin/imageviewpopuphelper-0.1.1.jar)
 
 Usage
 -----
