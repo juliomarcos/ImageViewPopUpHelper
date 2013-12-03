@@ -8,6 +8,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+    <!-- http://www.flickr.com/photos/fefa_guerra/7981699653/sizes/m/in/photolist-dajieg-btg4bJ-bGaVtz-dHeMHM-dajj2w-ecPFbA-aqkQgh-aqkQKC-8wYnhw-8wVnSk-7HZLUr-7Kq5Jf-aEkH7e-eT8Nar-aEkFGr-7GizbH-bjBrj9-caWPtJ-dajikZ-caWMcq-9xHe2M-caWQeJ-caWMWW-caWQCo-dajih8-caWS7J-caWNP9-csgzAj-dk2tHv-hh8uya-ecJ2DH-awAAW1-8nNcAo-bchNh4-7LJUvJ-8hddmZ-8hddgR-aufxq6-auicvj-9QoJNo-8hgszy-8hc46i-8hfiBb-8hfis3-8hc43K-8hfizw-8hfipE-8hc3Wt-dzm4f4-dzm3ZB-dzrxXm/ -->
+    <!-- http://creativecommons.org/licenses/by/2.0/ -->
     <ImageView 
         android:id="@+id/pop_me"
         android:padding="50dp"
