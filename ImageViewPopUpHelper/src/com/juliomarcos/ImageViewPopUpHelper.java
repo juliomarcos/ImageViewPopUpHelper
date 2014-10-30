@@ -26,8 +26,8 @@ public class ImageViewPopUpHelper {
 	private Dialog dialog;
 
 	@SuppressWarnings("deprecation")
-	private void cacheResizedImage(ImageView imageView) {
-		imageViewDrawable = imageView.getDrawable();		
+	private void cacheResizedDrawable(Drawable drawable, boolean shouldScaleDown, boolean shouldScaleUp) {
+		imageViewDrawable = drawable;
 		int imageRealWidth = imageViewDrawable.getIntrinsicWidth();
 		int imageRealHeight = imageViewDrawable.getIntrinsicHeight();
 		
@@ -36,12 +36,18 @@ public class ImageViewPopUpHelper {
 		final int screenHeight = screenDimensions.y;
 				
 		// Algoritmo iterativo para achar um tamanho final para a imagem
-		while(imageRealWidth >= screenWidth || imageRealHeight >= screenHeight) {					
+		while(shouldScaleDown && (imageRealWidth >= screenWidth || imageRealHeight >= screenHeight)) {
 			imageRealWidth  *= 0.9;
 			imageRealHeight *= 0.9;
 			requireResizingOfBitmap = true;
 		}
-		
+
+		while(shouldScaleUp && ((imageRealWidth * 1.1) <= screenWidth && (imageRealHeight * 1.1) <= screenHeight)) {
+      imageRealWidth  *= 1.1;
+      imageRealHeight *= 1.1;
+      requireResizingOfBitmap = true;
+    }
+
 		finalImageWidth = imageRealWidth;
 		finalImageHeight = imageRealHeight;		
 		
@@ -56,13 +62,23 @@ public class ImageViewPopUpHelper {
 			poppedImageView.setBackgroundDrawable(imageViewDrawable);
 		}
 	}
-	
+
+	/**
+   * Enable tap to show popup image dialog with alternative drawable than imageView's drawable
+   * @param context Context
+   * @param imageView Target Image View
+   * @param drawable Alternative Drawable
+   */
+  public static void enablePopUpOnClick(final Activity context, final ImageView imageView, final Drawable drawable) {
+      new ImageViewPopUpHelper().internalEnablePopUpOnClick(context, imageView, drawable);
+  }
+
 	public static void enablePopUpOnClick(final Activity context, final ImageView imageView) {
 		new ImageViewPopUpHelper().internalEnablePopUpOnClick(context, imageView);
 	}
-	
-	private void internalEnablePopUpOnClick(final Activity context, final ImageView imageView) {		
-		
+
+	private void internalEnablePopUpOnClick(final Activity context, final ImageView imageView, final Drawable drawable) {
+
 		this.context = context;
 		poppedImageView = new ImageView(context);
 		
@@ -74,17 +90,28 @@ public class ImageViewPopUpHelper {
 		
 		imageView.setOnClickListener(new View.OnClickListener() {						
 			@Override
-			public void onClick(View v) {									
-				
-				ImageView imageView = (ImageView) v;
-				
-				if (imageViewDrawable != imageView.getDrawable()) {
-					cacheResizedImage(imageView);
-				}
-								
+			public void onClick(View v) {
+
+				if (drawable != null) {
+          if (imageViewDrawable != drawable) {
+            cacheResizedDrawable(drawable, true, true);
+          }
+        }
+        else {
+          ImageView imageView = (ImageView) v;
+
+          if (imageViewDrawable != imageView.getDrawable()) {
+            cacheResizedDrawable(imageView.getDrawable(), true, true);
+          }
+        }
+
 				dialog.show();
 			}
 		});
+	}
+
+	private void internalEnablePopUpOnClick(final Activity context, final ImageView imageView) {
+		internalEnablePopUpOnClick(context, imageView, null);
 	}
 
 	@SuppressWarnings("deprecation")
